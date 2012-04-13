@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import CommonUI
+import simpleui
 from argparse import ArgumentParser
-from CommonUI.utils import UserConfig
+from simpleui.utils import UserConfig
 
 
 def setup_parser(parser): pass
@@ -31,4 +31,4 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     CommonUI.setup_parser(parser, cfg)
     setup_parser(parser)
-    ui = CommonUI.create_UI(parser.parse_args(), cfg)
+    ui = simpleui.create_UI(parser.parse_args(), cfg)
