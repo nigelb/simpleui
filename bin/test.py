@@ -29,6 +29,6 @@ def defaults(config, namespace): pass
 if __name__ == '__main__':
     cfg = UserConfig(def_config_callback=defaults)
     parser = ArgumentParser()
-    CommonUI.setup_parser(parser, cfg)
+    simpleui.setup_parser(parser, cfg)
     setup_parser(parser)
     ui = simpleui.create_UI(parser.parse_args(), cfg)
