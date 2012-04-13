@@ -1,7 +1,7 @@
 # simpleui implements a number of simple UI patterns with fallback to CLI if the
 # selected GUI fails.
 #
-# Copyright (C) 2011 NigelB
+# Copyright (C) 2012 NigelB
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
