@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
+from simpleui.exceptions import Cancelled
 
 from simpleui.utils import FileSelectorTypes
 
@@ -47,10 +48,13 @@ class creds_model:
         builder.connect_signals(self)
 
     def on_window_destroy(self, widget, data=None):
+        self.ok = False
+        self.window.hide()
         gtk.main_quit()
 
 
     def on_ok_clicked(self, widget, data=None):
+        self.window.hide()
         self.ok = True
         self.username = self._username.get_text()
         self.password = self._password.get_text()
@@ -58,8 +62,9 @@ class creds_model:
 
 
     def on_cancel_clicked(self, widget, data=None):
+        self.ok = False
+        self.window.hide()
         gtk.main_quit()
-
 
     def get_creds(self):
         self.window.show()
@@ -191,7 +196,10 @@ class gtk_impl:
 
     def prompt_credentials(self, service):
         model = creds_model(self.__create_builder(self.__create_ui_path("Credentials.ui")), "Please enter your Credentials for %s: "%service)
-        return model.get_creds()
+        creds = model.get_creds()
+        if not model.ok:
+            raise Cancelled()
+        return creds
 
     def prompt_file_selector(self, title="", start_dir=".", type=FileSelectorTypes.OPEN):
         model = file_model(self.__create_builder(self.__create_ui_path("FileChooser.ui")))

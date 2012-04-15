@@ -29,30 +29,24 @@ class FileSelectorTypes:
     CREATE_FOLDER = "CREATE_FOLDER"
 
 
+def ui_defaults(namespace):
+    return {
+        "ui_impl": namespace.ui_impl,
+        "use_keyring": namespace.use_keyring,
+        }
+
+
 class UserConfig:
     def __init__(self, dir_name=os.path.join(os.path.expanduser("~"), ".common_ui"), config_file="ui.config",
-                 def_config_callback=None, ui_precedence=simpleui.default_ui_precedence):
+                 def_config_callback=ui_defaults, ui_precedence=simpleui.default_ui_precedence):
         self.config = None
         self.dir_name = dir_name
         self.config_file = os.path.join(dir_name, config_file)
 
-        def create(callback):
-            def defaults_creator(namespace):
-                print namespace
-                c = {
-                    "ui_impl": namespace.ui_impl,
-                    "use_keyring": namespace.use_keyring,
-                }
-                if not callback is None:
-                    callback(c, namespace)
-                return c
-
-            return defaults_creator
-
-        self.defaults_callback = create(def_config_callback)
+        self.defaults_callback = def_config_callback
         self.ui_precedence = ui_precedence
 
-    def initilise_dir(self, namespace):
+    def initialize_dir(self, namespace):
         if not os.path.exists(self.dir_name):
             os.mkdir(self.dir_name)
         if not os.path.exists(self.config_file):
@@ -78,10 +72,12 @@ class UserConfig:
 
     def get(self, key):
         return self.config[key]
+
     __getitem__ = get
 
     def set(self, key, value):
         self.config[key] = value
+
     __setitem__ = set
 
     def has_key(self, key):
@@ -89,6 +85,14 @@ class UserConfig:
 
     def delete(self, key):
         del self.config[key]
+
     __delitem__ = delete
 
+    def items(self):
+        return self.config.items()
 
+    def __iter__(self):
+        return self.config.__iter__()
+
+    def next(self):
+        return self.config.next()

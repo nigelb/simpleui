@@ -66,7 +66,7 @@ def setup_parser(parser, config):
 
 def create_UI(namespace, config, raise_cancelled=False):
     if not config.read_config():
-        config.initilise_dir(namespace)
+        config.initialize_dir(namespace)
     require(config.get("ui_impl"))
     from simpleui.impl import simpleui_impl
     return simpleui_impl(config, raise_cancelled=raise_cancelled)
