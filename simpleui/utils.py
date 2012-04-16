@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 from StringIO import StringIO
+import json
 
 import os
 from pprint import pprint
@@ -35,6 +36,36 @@ def ui_defaults(namespace):
         "use_keyring": namespace.use_keyring,
         }
 
+def serialize_objs(obj):
+    return json.dumps(obj)
+
+def serialize_obj(obj, fp):
+    return json.dump(obj, fp)
+
+def un_serialize_obj(file_handle):
+    return json.load(file_handle)
+
+def un_serialize_objs(to_un_serialize):
+    return json.loads(to_un_serialize)
+
+
+class config_helper:
+
+    def __init__(self, config):
+        self.config = config
+
+    def __setattr__(self, key, value):
+        if key == "config":
+            self.__dict__[key] = value
+        self.config[key] = value
+
+    def __getattr__(self, key):
+        if key is "__str__":
+            return self.config.__str__
+        return self.config[key]
+
+    def __contains__(self, item):
+        return self.__getattr__(item)
 
 class UserConfig:
     def __init__(self, dir_name=os.path.join(os.path.expanduser("~"), ".common_ui"), config_file="ui.config",
@@ -55,17 +86,17 @@ class UserConfig:
 
     def write_config(self):
         cf = open(self.config_file, "wb")
-        cf.write("config=")
-        pprint(self.config, cf, 4)
+        serialize_obj(self.config, cf)
         cf.close()
+
 
     def read_config(self):
         if not self.config is None:
             return True
         if os.path.exists(self.config_file):
-            a = {}
-            execfile(self.config_file, a)
-            self.config = a["config"]
+            cf = open(self.config_file, "rb")
+            self.config = un_serialize_obj(cf)
+            cf.close()
             return True
         else:
             return False

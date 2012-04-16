@@ -24,11 +24,12 @@ from simpleui.utils import UserConfig
 
 
 def setup_parser(parser): pass
-def defaults(config, namespace): pass
+#def defaults(namespace): pass
 
 if __name__ == '__main__':
-    cfg = UserConfig(def_config_callback=defaults)
+    cfg = UserConfig()
     parser = ArgumentParser()
     simpleui.setup_parser(parser, cfg)
     setup_parser(parser)
     ui = simpleui.create_UI(parser.parse_args(), cfg)
+    print ui.prompt_yes_no("Hello World?")
