@@ -57,32 +57,37 @@ class config_helper:
     def __setattr__(self, key, value):
         if key == "config":
             self.__dict__[key] = value
-        self.config[key] = value
+        else:
+            self.config[key] = value
 
     def __getattr__(self, key):
-        if key is "__str__":
-            return self.config.__str__
+        if key is "__str__":            return self.config.__str__
+        elif key is "__repr__":         return self.config.__repr__
+        elif key is "config_delegate":  return self.config
         return self.config[key]
 
     def __contains__(self, item):
         return self.__getattr__(item)
 
+
 class UserConfig:
     def __init__(self, dir_name=os.path.join(os.path.expanduser("~"), ".common_ui"), config_file="ui.config",
-                 def_config_callback=ui_defaults, ui_precedence=simpleui.default_ui_precedence):
+                 def_config_callback=ui_defaults, ui_precedence=simpleui.default_ui_precedence, write_on_initialize=True):
         self.config = None
         self.dir_name = dir_name
         self.config_file = os.path.join(dir_name, config_file)
 
         self.defaults_callback = def_config_callback
         self.ui_precedence = ui_precedence
+        self.write_on_initialize = write_on_initialize
 
     def initialize_dir(self, namespace):
         if not os.path.exists(self.dir_name):
             os.mkdir(self.dir_name)
         if not os.path.exists(self.config_file):
             self.config = self.defaults_callback(namespace)
-            self.write_config()
+            if self.write_on_initialize:
+                self.write_config()
 
     def write_config(self):
         cf = open(self.config_file, "wb")
@@ -127,3 +132,6 @@ class UserConfig:
 
     def next(self):
         return self.config.next()
+
+    def __repr__(self):
+        return self.config.__repr__()
