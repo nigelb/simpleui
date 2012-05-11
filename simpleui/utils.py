@@ -60,6 +60,9 @@ class config_helper:
         else:
             self.config[key] = value
 
+    def __getitem__(self, item):
+        return self.config[item]
+
     def __getattr__(self, key):
         if key is "__str__":            return self.config.__str__
         elif key is "__repr__":         return self.config.__repr__
