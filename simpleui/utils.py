@@ -66,6 +66,7 @@ class config_helper:
     def __getattr__(self, key):
         if key is "__str__":            return self.config.__str__
         elif key is "__repr__":         return self.config.__repr__
+        elif key is "__iter__":         return self.config.__iter__
         elif key is "config_delegate":  return self.config
         return self.config[key]
 
