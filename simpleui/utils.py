@@ -111,6 +111,7 @@ class UserConfig:
             return False
 
     def get(self, key):
+        if key is "config_delegate": return self
         return self.config[key]
 
     __getitem__ = get
