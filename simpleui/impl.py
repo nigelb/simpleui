@@ -71,6 +71,9 @@ class simpleui_impl:
         return self.ui.prompt_file_selector(title=title, start_dir=start_dir, type=type)
 
 
+    def display_graph(self, title="Graph", graph=None):
+        return self.ui.display_graph(title=title, graph=graph)
+
     def prompt_yes_no(self, message):
         return self.ui.prompt_yes_no(message)
 

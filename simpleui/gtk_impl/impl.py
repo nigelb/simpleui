@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
+import tempfile
 from simpleui.exceptions import Cancelled
 
 from simpleui.utils import FileSelectorTypes
@@ -173,6 +174,33 @@ class file_model:
         self.window.hide()
         gtk.main_quit()
 
+class graph_model:
+    def __init__(self, builder):
+        self.window = builder.get_object("GraphView")
+        self.image = builder.get_object("Image")
+        builder.connect_signals(self)
+        self.ok = False
+
+    def display_graph(self, title="", graph=None):
+        a= tempfile.mkstemp()
+        graph.write_png(a[1])
+        self.image.set_from_file(a[1])
+        os.remove(a[1])
+        self.window.set_title(title)
+        self.window.show()
+        gtk.main()
+        return self.ok
+
+    def on_ok(self, widget, data=None):
+        self.ok = True
+        self.window.hide()
+        gtk.main_quit()
+
+    def on_cancel(self, widget, data=None):
+        self.window.hide()
+        gtk.main_quit()
+
+
 class gtk_impl:
     ui_type = "gtk_impl"
 
@@ -204,6 +232,11 @@ class gtk_impl:
     def prompt_file_selector(self, title="", start_dir=".", type=FileSelectorTypes.OPEN):
         model = file_model(self.__create_builder(self.__create_ui_path("FileChooser.ui")))
         return model.get_filename(title=title, start_dir=start_dir, action=self.types[type])
+
+    def display_graph(self, title="", graph=None):
+        model = graph_model(self.__create_builder(self.__create_ui_path("GraphView.ui")))
+        return model.display_graph(title=title, graph=graph)
+
 
     def prompt_test_input(self):
         pass
